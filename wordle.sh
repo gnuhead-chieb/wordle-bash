@@ -9,13 +9,7 @@ function win {
 }
 
 word=$(sed -n $(shuf -i 1-$(cat ${dict} | wc -l) -n 1)p ${dict})
-[[ "${#word}" != 5 ]] && echo "Unexpected error!"
-
-correct[0]="null"
-for i in `seq 5`
-do
- correct+=($(echo -n "${word}" | cut -c ${i}))
-done
+[[ "${#word}" != 5 ]] && { echo "Unexpected error!"; exit 0; }
 
 for tries in `seq 6`
 do
@@ -36,8 +30,9 @@ do
  for i in `seq 5`
  do
   search=$(echo -n "${answer}" | cut -c ${i})
+  correct=$(echo -n "${word}" | cut -c ${i})
   { echo -n "${word}" | grep "${search}" >/dev/null; } && {
-   [[ "${search}" = "${correct[$i]}" ]] && echo -n "\e[30;42m${search^^}\e[m" || echo -n "\e[30;43m${search^^}\e[m"
+   [[ "${search}" = "${correct}" ]] && echo -n "\e[30;42m${search^^}\e[m" || echo -n "\e[30;43m${search^^}\e[m"
   } || {
    echo -n "\e[30;47m${search^^}\e[m"
   }
